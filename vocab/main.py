@@ -14,10 +14,22 @@ random.shuffle(seq)
 
 # Getting which 2 languages the current .txt file contains
 lang1, lang2 = db[0].strip().split(', ')
-print(f'Translating {lang1} to {lang2}.')
+print(f"Translating {lang1} to {lang2}.\nYou'll see words in {lang1}, type in their correct translation in {lang2}")
 
-# Printing out the wordpairs from the .txt separately and in random order
+# Main loop
 for i in range(len(seq)):
+
+    # Adding each word from the wordpairs to separate variables
     word1, word2 = db[seq[i] + 1].strip().split(', ')
-    print(word1, word2)
+
+    # Printing the first word
+    print(word1)
+
+    # The user can input a word. Checking if it's the correct translation or not and telling the user.
+    word3 = input()
+    if word2 != word3:
+        print(f'Wrong! The correct translation was: {word2}')
+    else:
+        print('Correct!')
+    
     
