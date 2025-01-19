@@ -4,6 +4,10 @@ import random
 # Changing the directory to the folder in which the .txt files and main.py are in
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
+# List the .txt files from the current directory
+txt = [file for file in os.listdir() if file.endswith('.txt')]
+print(txt)
+
 # Opening the database.txt file in read mode, then reading every line separately to the db variable
 with open('database.txt', 'r') as file:
     db = file.readlines()
