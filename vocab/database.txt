@@ -1,0 +1,4 @@
+apple, alma
+melon, dinnye
+pear, korte
+day, nap
