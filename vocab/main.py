@@ -6,8 +6,7 @@ import pygame
 pygame.init()
 
 # Constants
-WIDTH = 600
-HEIGHT = 600
+SCALE = 600
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 PURPLE = (128, 0, 128)
@@ -15,35 +14,12 @@ PURPLE = (128, 0, 128)
 # GREEN = (0, 255, 0)
 BLUE = (0, 0, 255)
 GRAY = (128, 128, 128)
-FONT = pygame.font.Font(None, 50)
-SCREEN = pygame.display.set_mode((WIDTH, HEIGHT))
+SCREEN = pygame.display.set_mode((SCALE, SCALE))
 
+writing = False
+writingcolour = BLACK
+check = False
 
-class Object():
-
-    def __init__(self, x, y, width, height):
-        self.x = x
-        self.y = y
-        self.width = width
-        self.height = height
-        self.hitbox = pygame.Rect(x, y, width, height)
-
-    def draw_object(self, colour):
-
-        pygame.draw.rect(SCREEN, colour, self.hitbox)
-
-
-class Text(Object):
-
-    def __init__(self, x, y, width, height, text):
-        super().__init__(x, y, width, height)
-        self.text = text
-        self.hitbox = pygame.Rect(x, y, width, height)
-
-    def draw_text(self, colour, textcolour):
-
-        pygame.draw.rect(SCREEN, colour, self.hitbox)
-        SCREEN.blit(FONT.render(self.text, True, textcolour), FONT.render(self.text, True, textcolour).get_rect(center = self.hitbox.center))
 
 # Changing the directory to the folder in which the .txt files and main.py are in
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
@@ -64,45 +40,75 @@ random.shuffle(sequence)
 lang1, lang2 = database[0].strip().split(', ')
 print(f"Translating {lang1} to {lang2}.\nYou'll see words in {lang1}, type in their correct translation in {lang2}")
 
+word1, word2 = database[sequence[0] + 1].strip().split(', ')
 
-background = Object(0, HEIGHT/5, WIDTH, HEIGHT)
-setting = Object(WIDTH/30, HEIGHT/30, WIDTH/30*4, HEIGHT/30*4)
-customize = Object(WIDTH/30*25, HEIGHT/30, WIDTH/30*4, HEIGHT/30*4)
-language1 = Text(WIDTH/30*6, HEIGHT/30, WIDTH/30*18, HEIGHT/30*2, lang1)
-language2 = Text(WIDTH/30*6, HEIGHT/30*3, WIDTH/30*18, HEIGHT/30*2, lang2)
-line = Object(0, HEIGHT/30*6, WIDTH, HEIGHT/30)
-word1 = Object(WIDTH/30, HEIGHT/30*8, WIDTH/30*28, HEIGHT/30*6)
-word2 = Object(WIDTH/30, HEIGHT/30*15, WIDTH/30*28, HEIGHT/30*6)
-correct = Object(WIDTH/30*2, HEIGHT/30*22, WIDTH/30*11, HEIGHT/30*4)
-play = Object(WIDTH/30*15, HEIGHT/30*22, WIDTH/30*4, HEIGHT/30*4)
-left = Text(WIDTH/30*21, HEIGHT/30*22, WIDTH/30*7, HEIGHT/30*2, 'Words left:')
-number = Object(WIDTH/30*21, HEIGHT/30*24, WIDTH/30*7, HEIGHT/30*2)
-end = Text(WIDTH/30, HEIGHT/30*27, WIDTH/30*5, HEIGHT/30*2, 'END')
-scoretext = Text(WIDTH/30*7, HEIGHT/30*27, WIDTH/30*8, HEIGHT/30*2, 'SCORE:')
-score = Text(WIDTH/30*15, HEIGHT/30*27, WIDTH/30*8, HEIGHT/30*2, '0/0')
-percentage = Text(WIDTH/30*25, HEIGHT/30*27, WIDTH/30*5, HEIGHT/30*2, '100%')
+class Rectangle():
+
+    def __init__(self, x, y, width, height):
+        self.x = int(x)
+        self.y = int(y)
+        self.width = int(width)
+        self.height = int(height)
+        self.hitbox = pygame.Rect(int(x), int(y), int(width), int(height))
+
+    def draw_rectangle(self, colour):
+
+        pygame.draw.rect(SCREEN, colour, self.hitbox)
+
+
+class Text(Rectangle):
+
+    def __init__(self, x, y, width, height, text):
+        super().__init__(x, y, width, height)
+        self.text = text
+        self.hitbox = pygame.Rect(x, y, width, height)
+
+    def draw_text(self, colour, textcolour, font):
+
+        FONT = pygame.font.Font(None, int(font))
+        pygame.draw.rect(SCREEN, colour, self.hitbox)
+        SCREEN.blit(FONT.render(self.text, True, textcolour), FONT.render(self.text, True, textcolour).get_rect(center = self.hitbox.center))
+
+
+
+background = Rectangle(0, SCALE/5, SCALE, SCALE)
+setting = Rectangle(SCALE/30, SCALE/30, SCALE/30*4, SCALE/30*4)
+customize = Rectangle(SCALE/30*25, SCALE/30, SCALE/30*4, SCALE/30*4)
+language1 = Text(SCALE/30*6, SCALE/30, SCALE/30*18, SCALE/30*2, lang1)
+language2 = Text(SCALE/30*6, SCALE/30*3, SCALE/30*18, SCALE/30*2, lang2)
+line = Rectangle(0, SCALE/30*6, SCALE, SCALE/30)
+word1 = Text(SCALE/30, SCALE/30*8, SCALE/30*28, SCALE/30*6, word1)
+word3 = Text(SCALE/30, SCALE/30*15, SCALE/30*28, SCALE/30*6, '')
+correct = Text(SCALE/30*2, SCALE/30*22, SCALE/30*11, SCALE/30*4, 'Correct!')
+play = Rectangle(SCALE/30*15, SCALE/30*22, SCALE/30*4, SCALE/30*4)
+left = Text(SCALE/30*21, SCALE/30*22, SCALE/30*7, SCALE/30*2, 'Words left:')
+number = Text(SCALE/30*21, SCALE/30*24, SCALE/30*7, SCALE/30*2, str(len(sequence)))
+end = Text(SCALE/30, SCALE/30*27, SCALE/30*5, SCALE/30*2, 'END')
+scoretext = Text(SCALE/30*7, SCALE/30*27, SCALE/30*8, SCALE/30*2, 'SCORE:')
+score = Text(SCALE/30*15, SCALE/30*27, SCALE/30*8, SCALE/30*2, '0/0')
+percentage = Text(SCALE/30*25, SCALE/30*27, SCALE/30*5, SCALE/30*2, '100%')
 
 
 
 def screen_update():
 
     SCREEN.fill(BLACK)
-    background.draw_object(PURPLE)
-    setting.draw_object(PURPLE)
-    customize.draw_object(PURPLE)
-    language1.draw_text(WHITE, GRAY)
-    language2.draw_text(GRAY, WHITE)
-    line.draw_object(BLUE)
-    word1.draw_object(BLACK)
-    word2.draw_object(BLACK)
-    correct.draw_object(WHITE)
-    play.draw_object(BLUE)
-    left.draw_text(WHITE, BLACK)
-    number.draw_object(BLUE)
-    end.draw_text(WHITE, BLACK)
-    scoretext.draw_text(BLACK, WHITE)
-    score.draw_text(WHITE, BLACK)
-    percentage.draw_text(BLACK, WHITE)
+    background.draw_rectangle(PURPLE)
+    setting.draw_rectangle(PURPLE)
+    customize.draw_rectangle(PURPLE)
+    language1.draw_text(WHITE, GRAY, SCALE/12)
+    language2.draw_text(GRAY, WHITE, SCALE/12)
+    line.draw_rectangle(BLUE)
+    word1.draw_text(BLACK, WHITE, SCALE/6)
+    word3.draw_text(writingcolour, BLUE, SCALE/6)
+    correct.draw_text(WHITE, BLACK, SCALE/10)
+    play.draw_rectangle(BLUE)
+    left.draw_text(WHITE, BLACK, SCALE/120*7)
+    number.draw_text(BLUE, WHITE, SCALE/12)
+    end.draw_text(WHITE, BLACK, SCALE/12)
+    scoretext.draw_text(BLACK, WHITE, SCALE/12)
+    score.draw_text(WHITE, BLACK, SCALE/12)
+    percentage.draw_text(BLACK, WHITE, SCALE/12)
     pygame.display.flip()
 
 running = True
@@ -112,6 +118,29 @@ while running:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if word3.hitbox.collidepoint(event.pos) and check == False:
+                writing = not writing
+            else:
+                writing = False
+            writingcolour = WHITE if writing else BLACK
+            if end.hitbox.collidepoint(event.pos):
+                running = False
+            elif play.hitbox.collidepoint(event.pos):
+                word3.text = ''
+                check = False
+        if event.type == pygame.KEYDOWN:
+                if writing:
+                    if event.key == pygame.K_RETURN:
+                        print(word3.text)
+                        word3.text = word2
+                        check = True
+                        writingcolour = BLACK
+                    elif event.key == pygame.K_BACKSPACE:
+                        word3.text = word3.text[:-1]
+                    else:
+                        word3.text += event.unicode
+
         
     screen_update()
 
@@ -133,5 +162,4 @@ for i in range(len(seq)):
         print(f'Wrong! The correct translation was: {word2}')
     else:
         print('Correct!')
-    
 '''
